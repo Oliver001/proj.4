@@ -14,7 +14,16 @@ cmake_minimum_required(VERSION 2.6.0 FATAL_ERROR)
 # proj4 is an ANSI C project
 project(PROJ4 C)
 set(PROJECT_INTERN_NAME PROJ)
-
+if(NOT COMMAND find_host_package)
+  macro(find_host_package)
+    find_package(${ARGN})
+  endmacro()
+endif()
+if(NOT COMMAND find_host_program)
+  macro(find_host_program)
+    find_program(${ARGN})
+  endmacro()
+endif()
 #################################################################################
 # PROJ4 CMake modules
 #################################################################################
@@ -47,7 +56,7 @@ include(policies)
 # threading configuration
 #################################################################################
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
-find_package (Threads)
+find_host_package (Threads)
 
 include(CheckIncludeFiles)
 include(CheckSymbolExists)

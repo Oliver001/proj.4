@@ -141,7 +141,7 @@ install: all
 	-mkdir $(INSTDIR)\lib
 	-mkdir $(INSTDIR)\include
 	copy *.exe $(INSTDIR)\bin
-	copy *.dll $(INSTDIR)\bin
+	!if exist .\*.dll copy *.dll $(INSTDIR)\bin
 	copy *.lib $(INSTDIR)\lib
 	copy proj_api.h $(INSTDIR)\include
 	copy projects.h $(INSTDIR)\include

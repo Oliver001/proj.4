@@ -23,7 +23,7 @@ option(USE_THREAD "Build libproj with thread/mutex support " ON)
 if(NOT USE_THREAD)
    add_definitions( -DMUTEX_stub)
 endif(NOT USE_THREAD)
-find_package(Threads QUIET)
+find_host_package(Threads QUIET)
 if(USE_THREAD AND Threads_FOUND AND CMAKE_USE_WIN32_THREADS_INIT )
    add_definitions( -DMUTEX_win32)
 endif(USE_THREAD AND Threads_FOUND AND CMAKE_USE_WIN32_THREADS_INIT )
@@ -234,23 +234,42 @@ add_definitions(-DPROJ_LIB="${CMAKE_INSTALL_PREFIX}/${DATADIR}")
 ## java wrapping with jni
 #################################################
 option(JNI_SUPPORT "Build support of java/jni wrapping for proj library" OFF)
-find_package(JNI QUIET)
-if(JNI_SUPPORT AND NOT JNI_FOUND)
-  message(FATAL_ERROR "jni support is required but jni is not found")
-endif(JNI_SUPPORT AND NOT JNI_FOUND)
-boost_report_value(JNI_SUPPORT)
-if(JNI_SUPPORT)
-  set(SRC_LIBPROJ_CORE ${SRC_LIBPROJ_CORE}
-                       jniproj.c )
-  set(HEADERS_LIBPROJ ${HEADERS_LIBPROJ}
-                        org_proj4_PJ.h
-                        org_proj4_Projections.h)
-  source_group("Source Files\\JNI" FILES ${SRC_LIBPROJ_JNI})
-  add_definitions(-DJNI_ENABLED)
-  include_directories( ${JNI_INCLUDE_DIRS})
-  boost_report_value(JNI_INCLUDE_DIRS)
-endif(JNI_SUPPORT)
-
+if(ANDRIOD OR ANDROID_ABI)
+  message("-- android")
+  boost_report_value(JNI_SUPPORT)
+  message("-- android")
+  if(JNI_SUPPORT)
+    message("-- android")
+    set(SRC_LIBPROJ_CORE ${SRC_LIBPROJ_CORE}
+                         jniproj.c )
+    set(HEADERS_LIBPROJ ${HEADERS_LIBPROJ}
+                          org_proj4_PJ.h
+                          org_proj4_Projections.h)
+    source_group("Source Files\\JNI" FILES ${SRC_LIBPROJ_JNI})
+    add_definitions(-DJNI_ENABLED)
+	message("-- android")
+  endif(JNI_SUPPORT)
+else()
+  message("-- not android")
+  find_host_package(JNI)
+  if(JNI_SUPPORT AND NOT JNI_FOUND)
+    message(FATAL_ERROR "jni support is required but jni is not found")
+  endif(JNI_SUPPORT AND NOT JNI_FOUND)
+  boost_report_value(JNI_SUPPORT)
+  if(JNI_SUPPORT)
+    message("-- not android")
+    set(SRC_LIBPROJ_CORE ${SRC_LIBPROJ_CORE}
+                         jniproj.c )
+    set(HEADERS_LIBPROJ ${HEADERS_LIBPROJ}
+                          org_proj4_PJ.h
+                          org_proj4_Projections.h)
+    source_group("Source Files\\JNI" FILES ${SRC_LIBPROJ_JNI})
+    add_definitions(-DJNI_ENABLED)
+    include_directories( ${JNI_INCLUDE_DIRS})
+    boost_report_value(JNI_INCLUDE_DIRS)
+	message("-- not android")
+  endif(JNI_SUPPORT)
+endif(ANDRIOD OR ANDROID_ABI)
 #################################################
 ## targets: libproj and proj_config.h
 #################################################
